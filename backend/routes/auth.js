@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require('express');
 const { body, validationResult } = require("express-validator");
 const { find, findOne } = require("../models/User");
 const User = require("../models/User");
@@ -6,11 +6,11 @@ const bcrypt = require("bcryptjs");
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const JWT_SECRET="ganeshkanawade";
+const fetchuser = require('../middleware/fetchuser')
 
 //rout 1 user
 
-router.post(
-  "/createuser",
+router.post('/createuser',
   [
     //validations
     body("name", "Enter valid name").isLength({ min: 3 }),
@@ -101,6 +101,21 @@ router.post(
   
   
   })
+  //Raute 3 :getuser
+  
+router.post('/getuser', fetchuser , async(req,res )=>{
+  try{
+      userId = req.user.id
+      const user = await User.findById(userId).select("-password");
+      res.send(user);
+  }catch (error) {
+    console.log(error.mesage);
+    res.status(500).json({ errors: "some error occured" });
+  }
+})
+
+
+ 
   
 
 
