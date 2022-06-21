@@ -16,7 +16,7 @@ router.post('/createuser', [
   body('password', 'Password must be of at least 8 characters').isLength({ min: 8 }),
 
 ], async (req, res) => {
-
+  let success = false;
   //erroe handling
   try {
     const errors = validationResult(req);
@@ -26,7 +26,7 @@ router.post('/createuser', [
     // console.log(req.body);
     let user = await User.findOne({ email: req.body.email });
     if (user) {
-      return res.status(400).json({ errors: "user already exists" });
+      return res.status(400).json({ success, errors: "user already exists" });
     }
     //hash password generation
     const salt = await bcrypt.genSaltSync(10);
@@ -52,7 +52,9 @@ router.post('/createuser', [
     //   }) //////
     // })  
     // console.log(authtoken)
-    res.json({authtoken})
+    success = true;
+    res.json({success, authtoken})
+    
   } catch (error) {
     console.log(error.mesage);
     res.status(500).json({ errors: "some error occured" });
@@ -66,23 +68,24 @@ router.post('/login', [
   body('password', 'Enter valid password').exists()
 ], async (req, res) => {
 
+  let success = false;
   const { email, password } = req.body;
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ success, errors: errors.array() });
     }
     
     //user not exists
     let user = await User.findOne({email});
     if (!user) {
-      return res.status(400).json({ errors: "user not exists" });
+      return res.status(400).json({success, errors: "user not exists" });
     }
 
     const passwordComapre = await bcrypt.compare(password, user.password);
     //password comaprasion
     if(!passwordComapre){
-      return res.status(400).json({ errors: "Login credentials are invalid" });
+      return res.status(400).json({success, errors: "Login credentials are invalid" });
     }
 
    const payload = {
@@ -92,7 +95,8 @@ router.post('/login', [
    }
 
   const authtoken = jwt.sign(payload, JWT_SECRET)
-  res.json({authtoken})
+  success = true;
+  res.json({success, authtoken})
 
   } catch (error) {
     console.log(error.mesage);

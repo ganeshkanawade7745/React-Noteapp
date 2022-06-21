@@ -1,21 +1,12 @@
-// import React, { useContext, useEffect } from 'react'
-// import NoteContext from '../context/NoteContext';
-
-import React from 'react';
-
+import React, { useContext, useEffect }  from 'react'
+import NoteContext from '../context/NoteContext'
 
 const About = () => {
-  // const a = useContext(NoteContext)
-  // useEffect(() => {
-  //   a.update()
-
-  // }, [])
+ 
 
   return (
     <>
-      <p>About me Hi my name is
-         {/* {a.state.name}, my role is {a.state.role} */}
-      </p>
+    <p>This is about page, Hi I am Ganesh </p>
     </>
   )
 }
